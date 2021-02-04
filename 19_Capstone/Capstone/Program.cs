@@ -1,5 +1,6 @@
 ﻿using Capstone.CLI;
 using System;
+using System.IO;
 
 namespace Capstone
 {
@@ -24,6 +25,16 @@ namespace Capstone
             // Some objects could be passed into the menu constructor, so that the menu has something to 
             // perform its actions against....
             MainMenu mainMenu = new MainMenu();
+            // restock
+            mainMenu.Start();
+
+            //delete old purchase log
+            string[] oldFiles = Directory.GetFiles(@"..\..\..\..\",@"*Log*");
+            foreach (string file in oldFiles)
+            {
+                File.Delete(file);
+            }
+
             mainMenu.Show();
         }
     }

@@ -16,32 +16,54 @@ namespace Capstone.CLI
          * ****************************************************************************/
 
         // NOTE: This constructor could be changed to accept arguments needed by the menu
+        public VendingMachine vendingMachine = new VendingMachine(0);
         public MainMenu()
         {
+            //VendingMachine vendingMachine = new VendingMachine(0);
             // Add Sample menu options
-            AddOption("Greeting", Greeting, "G");
-            AddOption("Show the Time", GetTime, "T");
-            AddOption("Quit", Close, "Q");
+            AddOption("(1) Display Vending Machine Items", DisplayVendingMachine);
+            AddOption("(2) Purchase", Purchase);
+            AddOption("(3) Exit", Exit);
+
 
             Configure(cfg =>
            {
                cfg.ItemForegroundColor = ConsoleColor.Cyan;
-               cfg.MenuSelectionMode = MenuSelectionMode.KeyString; // KeyString: User types a key, Arrow: User selects with arrow
+               cfg.MenuSelectionMode = MenuSelectionMode.Arrow; // KeyString: User types a key, Arrow: User selects with arrow
                cfg.KeyStringTextSeparator = ": ";
                cfg.Title = "Main Menu";
            });
         }
 
-        private MenuOptionResult GetTime()
+        private MenuOptionResult Purchase()
         {
-            Console.WriteLine($"The time is {DateTime.Now}");
+            PurchaseMenu purchaseMenu = new PurchaseMenu(vendingMachine);
+            purchaseMenu.Show();
             return MenuOptionResult.WaitAfterMenuSelection;
         }
 
-        private MenuOptionResult Greeting()
+        public void Start()
         {
-            string name = GetString("What is your name? ");
-            Console.WriteLine($"Hello, {name}!");
+            vendingMachine.Restock();
+        }
+
+        private MenuOptionResult DisplayVendingMachine()
+        {
+            vendingMachine.GetInventory();
+            /*
+            foreach (KeyValuePair<string,Product> kvp in vendingMachine.CurrentProductStock)
+            {
+                string quantity = "";
+                if (kvp.Value.Quantity == 0)
+                {
+                    quantity = "SOLD OUT";
+                }
+                else
+                {
+                    quantity = kvp.Value.Quantity.ToString();
+                }
+                Console.WriteLine($"{kvp.Value.Name} at {kvp.Key} has {quantity} remaining, and costs {kvp.Value.Price}");
+            }*/
             return MenuOptionResult.WaitAfterMenuSelection;
         }
     }
