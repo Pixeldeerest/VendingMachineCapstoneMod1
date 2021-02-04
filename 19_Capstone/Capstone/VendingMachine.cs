@@ -102,24 +102,20 @@ namespace Capstone
             }
         }
 
-        public void FinishTransaction()
+        public int[] FinishTransaction()
         {
+            int[] change = new int[3];
             double quarter = 0.25;
             int quarters = 0;
             double nickel = 0.05;
             int nickels = 0;
             double dime = 0.10;
             int dimes = 0;
-            //double penny = 0.01;
             decimal finishBalance = (decimal)this.Balance;
 
             double balanceBefore = this.Balance;
 
-            if (finishBalance==0)
-            {
-                return;
-            }
-            else
+            if (finishBalance !=0 )
             {
                 quarters = (int)(finishBalance / (decimal)quarter);
                 finishBalance -= (decimal)(quarters*quarter);
@@ -129,13 +125,18 @@ namespace Capstone
                 finishBalance -= (decimal)(nickels*nickel);
                 this.Balance = 0;
 
+                change[0] = quarters;
+                change[1] = dimes;
+                change[2] = nickels;
+
                 // log the give change
                 this.PurchaseLog("GIVE CHANGE", balanceBefore);
 
                 decimal sum = (decimal)(quarters * quarter + dimes * dime + nickels * nickel);
                 Console.WriteLine($"Your Change is: {quarters} quarters, {dimes} dimes, {nickels} nickels, or {sum:C2}");
+                
             }
-
+                return change;
         }
 
         public void PurchaseLog(string method, double balanceBefore)
@@ -161,10 +162,7 @@ namespace Capstone
             string timeString = time.ToString();
             timeString = timeString.Replace(@":", ".");
             timeString = timeString.Replace("/", ".");
-            //string[] newString = timeString.Split("\\");
-            //string finalString = string.Join(".", newString); 
 
-            //timeString = timeString.Replace("\\", ".");
             string path = @"..\..\..\..\SalesReport "+timeString+".txt";
             try
             {

@@ -30,7 +30,7 @@ namespace Capstone
                 {
                     return "Chew Chew, Yum!";
                 }
-                return null;
+                return "";
             }
         }
 

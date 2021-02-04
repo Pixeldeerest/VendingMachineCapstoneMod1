@@ -34,13 +34,13 @@ namespace Capstone
             Console.WriteLine($"\nCurrent Money Provided: {vendingMachine.GetBalance():C2}");
         }
 
-        public MenuOptionResult SalesReport()
+        private MenuOptionResult SalesReport()
         {
             vendingMachine.WriteSalesReport();
             Console.WriteLine("Sales Report Created");
             return MenuOptionResult.WaitAfterMenuSelection;
         }
-        public MenuOptionResult FeedMoney()
+        private MenuOptionResult FeedMoney()
         {
             bool isValidData = false;
             while (!isValidData)
@@ -70,7 +70,7 @@ namespace Capstone
 
         }
 
-        public MenuOptionResult SelectProduct()
+        private MenuOptionResult SelectProduct()
         {
             vendingMachine.GetInventory();
                 // TODO update this loop so it differentiates between a quantity exception and an identifier exception
@@ -79,7 +79,7 @@ namespace Capstone
             try
             {
                 Console.Write("\nPlease enter a letter (A-D): ");
-                string input = Console.ReadLine();
+                string input = Console.ReadLine().ToUpper();
                 if (input.Length > 1)
                 {
                     throw new Exception();
@@ -91,7 +91,6 @@ namespace Capstone
                     throw new Exception();
                 }
                 input += input2;
-
                 for(int i = 0; i < vendingMachine.CurrentProductStock.Count; i++)
                 {
                     if (vendingMachine.CurrentProductStock.ContainsKey(input))
@@ -125,7 +124,7 @@ namespace Capstone
         return MenuOptionResult.WaitAfterMenuSelection;
         }
 
-        public MenuOptionResult FinishTransaction()
+        private MenuOptionResult FinishTransaction()
         {
             vendingMachine.FinishTransaction();
             return Exit();
