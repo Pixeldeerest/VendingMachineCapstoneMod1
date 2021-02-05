@@ -18,5 +18,15 @@ namespace Capstone
         }
     }
 
+    public class IdentifierException : Exception
+    {
+        public string CodeSelection { get; set; }
+        public IdentifierException(string message, string codeSelection) : base(message)
+        {
+            //Keep track of the code and the product name
+            this.CodeSelection = codeSelection;
+        }
+    }
+
 
 }

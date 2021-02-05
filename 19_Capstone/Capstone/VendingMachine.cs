@@ -8,22 +8,32 @@ namespace Capstone
     public class VendingMachine
     {
         private double Balance { get; set; }
-        public Dictionary<string, Product> CurrentProductStock { get; set; }
+        private Dictionary<string, Product> CurrentProductStock { get; set; }  
         private Dictionary<string, int> SalesReport = new Dictionary<string, int>();
         private double TotalSales;
-
+        public string ReadPath { get; set; }
+        public string PurchaseLogPath { get; set; }
+        public string SalesReportPath { get; set; }
         public VendingMachine(double balance)
         {
             this.Balance = balance;
             CurrentProductStock = new Dictionary<string, Product>();
         }
 
+        public VendingMachine(double balance, string readPath, string purchaseLogPath, string salesReportPath)
+        {
+            this.Balance = balance;
+            CurrentProductStock = new Dictionary<string, Product>();
+            this.ReadPath = readPath;
+            this.PurchaseLogPath = purchaseLogPath;
+            this.SalesReportPath = salesReportPath;
+        }
+
         public void Restock()//parameter string path - path hardcoded in Program.cs
         {
-            string path = @"..\..\..\..\vendingmachine.csv";
             try
             {
-                using (StreamReader sr = new StreamReader(path))
+                using (StreamReader sr = new StreamReader(this.ReadPath))
                 {
                     while (!sr.EndOfStream)
                     {
@@ -66,7 +76,6 @@ namespace Capstone
                 {
                     quantity = kvp.Value.Quantity.ToString();
                 }
-                Console.WriteLine("HEADER");
                 Console.WriteLine($"{kvp.Key,-4}{kvp.Value.Name,-25}{quantity,4}{kvp.Value.Price,7:C2}");
             }
         }
@@ -78,7 +87,7 @@ namespace Capstone
                 // balance before the dispense
                 double balanceBefore = this.Balance;
 
-                Console.WriteLine("*Clunk Clunk*");
+                Console.WriteLine("\n*Clunk Clunk*");
                 // update quantity for dispensing
                 this.CurrentProductStock[key].Quantity -= 1;
 
@@ -141,10 +150,9 @@ namespace Capstone
 
         public void PurchaseLog(string method, double balanceBefore)
         {
-            string path = @"..\..\..\..\Log.txt";
             try
             {
-                using (StreamWriter sw = new StreamWriter(path,true))
+                using (StreamWriter sw = new StreamWriter(this.PurchaseLogPath,true))
                 {
                     DateTime now = DateTime.Now;
                     sw.WriteLine($"{now} {method}: {balanceBefore:C2} {this.Balance:C2}");
@@ -158,15 +166,9 @@ namespace Capstone
 
         public void WriteSalesReport()
         {
-            DateTime time = DateTime.Now;
-            string timeString = time.ToString();
-            timeString = timeString.Replace(@":", ".");
-            timeString = timeString.Replace("/", ".");
-
-            string path = @"..\..\..\..\SalesReport "+timeString+".txt";
             try
             {
-                using (StreamWriter sw = new StreamWriter(path))
+                using (StreamWriter sw = new StreamWriter(this.SalesReportPath))
                 {
                     foreach (KeyValuePair<string,int> kvp in SalesReport)
                     {
@@ -179,6 +181,33 @@ namespace Capstone
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        public void VerifyKey(string key)
+        {
+            if (this.CurrentProductStock.ContainsKey(key))
+            {
+                if (this.CurrentProductStock[key].Quantity != 0)
+                {
+                    this.Dispense(key);
+                }
+                else
+                {
+                    throw new QuantityException("Quantity Exception", key, this.CurrentProductStock[key].Name);
+                }
+            }
+            else 
+            {
+                throw new IdentifierException("Identifier Exception", key);
+            }
+            
+        }
+
+        public Dictionary<string,Product> GetDictionary()
+        {
+            //protecting the original dictionary
+            return new Dictionary<string, Product>(this.CurrentProductStock);
+            //return this.CurrentProductStock;
         }
     }   
 }

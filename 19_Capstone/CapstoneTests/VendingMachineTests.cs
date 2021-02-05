@@ -17,30 +17,16 @@ namespace CapstoneTests
         public void TestDispenseString(string expectedString, string key)
         {
             //Arrange
-            VendingMachine vendingMachine = new VendingMachine(0);
+            VendingMachine vendingMachine = new VendingMachine(0, @"..\..\..\..\vendingmachine.csv","","");
             vendingMachine.Restock();
 
             //Act
+            string actualString = vendingMachine.GetDictionary()[key].ConsumptionMessage;
 
             //Assert
-            Assert.AreEqual(expectedString, vendingMachine.CurrentProductStock[key].ConsumptionMessage);
+            Assert.AreEqual(expectedString, actualString);
 
         }
-
-        //How to test for something we've already planned for
-        //[DataTestMethod]
-        //[DataRow("", "F2")]
-        //public void TestInvalidDispenseCode(string expectedString, string key)
-        //{
-        //    //Arrange
-        //    VendingMachine vendingMachine = new VendingMachine(0);
-        //    vendingMachine.Restock();
-
-        //    //Act
-
-        //    //Assert
-        //    Assert.ThrowsException<KeyNotFoundException>()
-        //}
 
         [DataTestMethod]
         [DataRow(5.00, 1.95, "A1")]
@@ -51,7 +37,7 @@ namespace CapstoneTests
         public void TestDispenseBalance(double balance, double expectedBalanceAfterPurchase, string key)
         {
             //Arrange
-            VendingMachine vendingMachine = new VendingMachine(balance);
+            VendingMachine vendingMachine = new VendingMachine(balance, @"..\..\..\..\vendingmachine.csv", "", "");
             vendingMachine.Restock();
 
             //Act
@@ -70,15 +56,15 @@ namespace CapstoneTests
         public void TestDispenseQuantity(int quantity, int expectedQuantityAfterPurchase, string key)
         {
             //Arrange
-            VendingMachine vendingMachine = new VendingMachine(10);
+            VendingMachine vendingMachine = new VendingMachine(10, @"..\..\..\..\vendingmachine.csv", "", "");
             vendingMachine.Restock();
-            vendingMachine.CurrentProductStock[key].Quantity = quantity;
+            vendingMachine.GetDictionary()[key].Quantity = quantity;
 
             //Act
             vendingMachine.Dispense(key);
 
             //Assert
-            Assert.AreEqual(expectedQuantityAfterPurchase, vendingMachine.CurrentProductStock[key].Quantity);
+            Assert.AreEqual(expectedQuantityAfterPurchase, vendingMachine.GetDictionary()[key].Quantity);
         }
 
         [DataTestMethod]
@@ -91,7 +77,7 @@ namespace CapstoneTests
         {
 
             //Arrange
-            VendingMachine vendingMachine = new VendingMachine(balanceBefore);
+            VendingMachine vendingMachine = new VendingMachine(balanceBefore, @"..\..\..\..\vendingmachine.csv", "", "");
             vendingMachine.Restock();
 
             //Act
@@ -120,37 +106,6 @@ namespace CapstoneTests
             //Assert
             Assert.AreEqual(expectedBalance, vendingMachine.GetBalance());
         }
-        //[TestMethod]
-        //public void TestGetInventory()
-        //{
-            //Testing is a quant is 0 "SOLD OUT"
-
-            //foreach (KeyValuePair<string, Product> kvp in this.CurrentProductStock)
-            //{
-            //    string quantity = "";
-            //    if (kvp.Value.Quantity == 0)
-            //    {
-            //        quantity = "SOLD OUT";
-            //    }
-            //    else
-            //    {
-            //        quantity = kvp.Value.Quantity.ToString();
-            //    }
-            //    Console.WriteLine($"{kvp.Value.Name} at {kvp.Key} has {quantity} remaining, and costs {kvp.Value.Price}");
-        //    }
-        //}
-        
-        //[TestMethod]
-        //public void TestPurchaseLog()
-        //{
-        //    string path = @"..\..\..\..\Log.txt";
-        //    using (StreamReader sr = new StreamReader(path))
-        //    {
-
-        //    }
-
-        //}
-
 
         [DataTestMethod]
         [DataRow("A1")]
@@ -172,13 +127,13 @@ namespace CapstoneTests
         public void TestRestock(string key)
         {
             //Arrange
-            VendingMachine vendingMachine = new VendingMachine(0);
+            VendingMachine vendingMachine = new VendingMachine(0, @"..\..\..\..\vendingmachine.csv", "", "");
 
             //Act
             vendingMachine.Restock();
 
             //Assert
-            Assert.AreEqual(5, vendingMachine.CurrentProductStock[key].Quantity);
+            Assert.AreEqual(5, vendingMachine.GetDictionary()[key].Quantity);
 
         }
 
@@ -199,6 +154,42 @@ namespace CapstoneTests
             //Assert
             Assert.AreEqual(expectedBalance, vendingMachine.UpdateBalance(money));
 
+        }
+
+        [DataTestMethod]
+        [ExpectedException(typeof(IdentifierException))]
+        [DataRow("T8")]
+        [DataRow("A8")]
+        [DataRow("T1")]
+        [DataRow("00")]
+        [DataRow("11")]
+        [DataRow("")]
+        public void TestVerifyKeyIdentifier(string key)
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine(0, @"..\..\..\..\vendingmachine.csv", "", "");
+            vendingMachine.Restock();
+
+            //Act
+            vendingMachine.VerifyKey(key);
+        }
+
+        [DataTestMethod]
+        [ExpectedException(typeof(QuantityException))]
+        [DataRow("A1")]
+        [DataRow("A2")]
+        [DataRow("B1")]
+        public void TestVerifyKeyQuantity(string key)
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine(0, @"..\..\..\..\vendingmachine.csv", "", "");
+            vendingMachine.Restock();
+            vendingMachine.GetDictionary()[key].Quantity = 0;
+            //making sure that the getdictionary method protects the original dictionary stored
+            vendingMachine.GetDictionary().Clear();
+
+            //Act
+            vendingMachine.VerifyKey(key);
         }
     }
 }

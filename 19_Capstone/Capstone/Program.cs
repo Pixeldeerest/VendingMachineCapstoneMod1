@@ -19,14 +19,26 @@ namespace Capstone
          * *************************************************************************************/
         static void Main(string[] args)
         {
-            // You may want to create some objects to get the whole process started here...
+            //paths for the writing and reading of the documents
+            string readingPath = @"..\..\..\..\vendingmachine.csv";
+            string purchaseLogPath = @"..\..\..\..\Log.txt";
 
+            //unique path made everytime based on datetime for the salesreport file
+            DateTime time = DateTime.Now;
+            string timeString = time.ToString();
+            timeString = timeString.Replace(@":", ".");
+            timeString = timeString.Replace("/", ".");
+            string salesReportPath = @"..\..\..\..\SalesReport " + timeString + ".txt";
+
+            // You may want to create some objects to get the whole process started here...
+            VendingMachine vendingMachine = new VendingMachine(0, readingPath,purchaseLogPath,salesReportPath);
+
+            //stock the vending machine
+            vendingMachine.Restock();
 
             // Some objects could be passed into the menu constructor, so that the menu has something to 
             // perform its actions against....
-            MainMenu mainMenu = new MainMenu();
-            // restock
-            mainMenu.Start();
+            MainMenu mainMenu = new MainMenu(vendingMachine);
 
             //delete old purchase log
             string[] oldFiles = Directory.GetFiles(@"..\..\..\..\",@"*Log*");

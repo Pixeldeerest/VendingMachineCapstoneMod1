@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TestingASCIIArt;
 
 namespace Capstone.CLI
 {
@@ -18,10 +17,10 @@ namespace Capstone.CLI
 
         // NOTE: This constructor could be changed to accept arguments needed by the menu
 
-        public VendingMachine vendingMachine = new VendingMachine(0);
-        VisualVendingMachine vendor = new VisualVendingMachine();
-        public MainMenu()
+        public VendingMachine VendingMachine;
+        public MainMenu(VendingMachine vendingMachine)
         {
+            this.VendingMachine = vendingMachine;
             AddOption("(1) Display Vending Machine Items", DisplayVendingMachine);
             AddOption("(2) Purchase", Purchase);
             AddOption("(3) Exit", Exit);
@@ -38,20 +37,60 @@ namespace Capstone.CLI
 
         private MenuOptionResult Purchase()
         {
-            PurchaseMenu purchaseMenu = new PurchaseMenu(vendingMachine);
+            PurchaseMenu purchaseMenu = new PurchaseMenu(this.VendingMachine);
             purchaseMenu.Show();
             return MenuOptionResult.WaitAfterMenuSelection;
         }
 
-        public void Start()
-        {
-            vendingMachine.Restock();
-        }
-
         private MenuOptionResult DisplayVendingMachine()
         {
-            vendor.Visualize();
-            vendingMachine.GetInventory();
+            Console.WriteLine(@" ____________________________________________");
+            Console.WriteLine(@"|############################################|");
+            Console.WriteLine(@"|#|                           |##############|");
+            Console.WriteLine(@"|#|  =====  ..--''`  |~~``|   |##|````````|##|");
+            Console.WriteLine(@"|#|  |   |  \     |  :    |   |##| Exact  |##|");
+            Console.WriteLine(@"|#|  |___|   /___ |  | ___|   |##| Change |##|");
+            Console.WriteLine(@"|#|  /=__\  ./.__\   |/,__\   |##| Only   |##|");
+            Console.WriteLine(@"|#|  \__//   \__//    \__//   |##|________|##|");
+            Console.WriteLine(@"|#|===========================|##############|");
+            Console.WriteLine(@"|#|```````````````````````````|##############|");
+            Console.WriteLine(@"|#| =.._      +++     //////  |##############|");
+            Console.WriteLine(@"|#| \/  \     | |     \    \  |#|`````````|##|");
+            Console.WriteLine(@"|#|  \___\    |_|     /___ /  |#| _______ |##|");
+            Console.WriteLine(@"|#|  / __\\  /|_|\   // __\   |#| |1|2|3| |##|");
+            Console.WriteLine(@"|#|  \__//-  \|_//   -\__//   |#| |4|5|6| |##|");
+            Console.WriteLine(@"|#|===========================|#| |7|8|9| |##|");
+            Console.WriteLine(@"|#|```````````````````````````|#| ``````` |##|");
+            Console.WriteLine(@"|#| ..--    ______   .--._.   |#|[=======]|##|");
+            Console.WriteLine(@"|#| \   \   |    |   |    |   |#|  _   _  |##|");
+            Console.WriteLine(@"|#|  \___\  : ___:   | ___|   |#| ||| ( ) |##|");
+            Console.WriteLine(@"|#|  / __\  |/ __\   // __\   |#| |||  `  |##|");
+            Console.WriteLine(@"|#|  \__//   \__//  /_\__//   |#|  ~      |##|");
+            Console.WriteLine(@"|#|===========================|#|_________|##|");
+            Console.WriteLine(@"|#|```````````````````````````|##############|");
+            Console.WriteLine(@"|############################################|");
+            Console.WriteLine(@"|#|||||||||||||||||||||||||||||####```````###|");
+            Console.WriteLine(@"|#||||||||||||PUSH|||||||||||||####\|||||/###|");
+            Console.WriteLine(@"|############################################|");
+            Console.WriteLine(@"\\\\\\\\\\\\\\\\\\\\\\///////////////////////");
+            Console.WriteLine(@" |_________________________________ | LVAD |");
+            Console.WriteLine("\n");
+            Console.WriteLine($"{"Slot",-7}{"Product Name",-25}{"QTY",4}{"Price",7:C2}");
+            Console.WriteLine($"{"===========================================",-43}");
+            foreach (KeyValuePair<string, Product> kvp in this.VendingMachine.GetDictionary())
+            {
+                string quantity = "";
+                if (kvp.Value.Quantity == 0)
+                {
+                    quantity = "SOLD OUT";
+                }
+                else
+                {
+                    quantity = kvp.Value.Quantity.ToString();
+                }
+                Console.WriteLine($"{kvp.Key,-7}{kvp.Value.Name,-25}{quantity,4}{kvp.Value.Price,7:C2}");
+            }
+
             return MenuOptionResult.WaitAfterMenuSelection;
         }
     }
