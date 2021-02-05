@@ -3,16 +3,16 @@ using MenuFramework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TestingASCIIArt;
 
 namespace Capstone
 {
     public class PurchaseMenu : ConsoleMenu
     {
         public VendingMachine vendingMachine;
+        VisualVendingMachine vendor = new VisualVendingMachine();
         public PurchaseMenu(VendingMachine vendingMachine)
         {
-            //VendingMachine vendingMachine = new VendingMachine(0);
-            // Add Sample menu options
             this.vendingMachine = vendingMachine;
             AddOption("(1) Feed Money", FeedMoney);
             AddOption("(2) Select Product", SelectProduct);
@@ -72,6 +72,7 @@ namespace Capstone
 
         private MenuOptionResult SelectProduct()
         {
+            vendor.Visualize();
             vendingMachine.GetInventory();
                 // TODO update this loop so it differentiates between a quantity exception and an identifier exception
                 //Exception QuantityException = new Exception();

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TestingASCIIArt;
 
 namespace Capstone.CLI
 {
@@ -16,11 +17,11 @@ namespace Capstone.CLI
          * ****************************************************************************/
 
         // NOTE: This constructor could be changed to accept arguments needed by the menu
+
         public VendingMachine vendingMachine = new VendingMachine(0);
+        VisualVendingMachine vendor = new VisualVendingMachine();
         public MainMenu()
         {
-            //VendingMachine vendingMachine = new VendingMachine(0);
-            // Add Sample menu options
             AddOption("(1) Display Vending Machine Items", DisplayVendingMachine);
             AddOption("(2) Purchase", Purchase);
             AddOption("(3) Exit", Exit);
@@ -49,21 +50,8 @@ namespace Capstone.CLI
 
         private MenuOptionResult DisplayVendingMachine()
         {
+            vendor.Visualize();
             vendingMachine.GetInventory();
-            /*
-            foreach (KeyValuePair<string,Product> kvp in vendingMachine.CurrentProductStock)
-            {
-                string quantity = "";
-                if (kvp.Value.Quantity == 0)
-                {
-                    quantity = "SOLD OUT";
-                }
-                else
-                {
-                    quantity = kvp.Value.Quantity.ToString();
-                }
-                Console.WriteLine($"{kvp.Value.Name} at {kvp.Key} has {quantity} remaining, and costs {kvp.Value.Price}");
-            }*/
             return MenuOptionResult.WaitAfterMenuSelection;
         }
     }
