@@ -91,6 +91,8 @@ namespace Capstone
                 {
                     throw new Exception();
                 }
+                //Call VendingMachine.MakeSelection()
+                //Code smell, really long names
                 input += input2;
                 for(int i = 0; i < vendingMachine.CurrentProductStock.Count; i++)
                 {
@@ -104,7 +106,7 @@ namespace Capstone
                         else
                         {
                             Console.WriteLine("Product is SOLD OUT!");
-                            break;
+                            throw new QuantityException("Quantity Exception", input, vendingMachine.CurrentProductStock[input].Name);
                         }
                     }
                     if (i == vendingMachine.CurrentProductStock.Count - 1)
@@ -113,21 +115,26 @@ namespace Capstone
                     }
                 }
             }
+            catch (QuantityException ex)
+            {
+                //Could refer to the code from ex.
+                Console.WriteLine(ex.Message);
+            }
             catch (Exception)
             {
                 Console.WriteLine("You did not enter a valid option");
             }
-            //catch (Exception QuantityException)
-            //{
-            //
-            //}
             
         return MenuOptionResult.WaitAfterMenuSelection;
         }
 
         private MenuOptionResult FinishTransaction()
         {
-            vendingMachine.FinishTransaction();
+            int[] change = vendingMachine.FinishTransaction();
+            //return sum in same array
+            int sum = 0;
+            //TODO - Actually change to get sum
+            Console.WriteLine($"Your Change is: {change[0]} quarters, {change[1]} dimes, {change[2]} nickels, or {sum:C2}");
             return Exit();
         }
 

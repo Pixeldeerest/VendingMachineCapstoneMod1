@@ -35,7 +35,6 @@ namespace Capstone
         }
 
 
-        // TODO how to keep track of quantity
         public Product(string name, double price, string type)
         {
             this.Name = name;

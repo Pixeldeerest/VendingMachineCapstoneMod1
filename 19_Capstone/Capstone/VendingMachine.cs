@@ -9,9 +9,7 @@ namespace Capstone
     {
         private double Balance { get; set; }
         public Dictionary<string, Product> CurrentProductStock { get; set; }
-        private Dictionary<string, int> SalesReport = new Dictionary<string, int>() { { "Potato Crisps", 0 }, { "Stackers", 0 },{ "Grain Waves", 0 }, { "Cloud Popcorn", 0 },
-            {"Moonpie",0 },{"Cowtales",0 },{ "Wonka Bar",0 },{"Crunchie",0 },{"Skor",0 },{"Cola",0 },{"Dr. Salt", 0 }, {"Mountain Melter", 0 },{"Heavy",0 },
-            {"Diet Cola",0 },{"U-Chews",0 },{"Little League Chew",0 },{"Chiclets",0 },{"Triplemint",0 } };
+        private Dictionary<string, int> SalesReport = new Dictionary<string, int>();
         private double TotalSales;
 
         public VendingMachine(double balance)
@@ -20,7 +18,7 @@ namespace Capstone
             CurrentProductStock = new Dictionary<string, Product>();
         }
 
-        public void Restock()
+        public void Restock()//parameter string path - path hardcoded in Program.cs
         {
             string path = @"..\..\..\..\vendingmachine.csv";
             try
@@ -33,6 +31,7 @@ namespace Capstone
                         string[] lineArray = line.Split("|");
                         Product product = new Product(lineArray[1], double.Parse(lineArray[2]), lineArray[3]);
                         CurrentProductStock.Add(lineArray[0], product);
+                        SalesReport.Add(product.Name, 0);
                     }
                 }
             }
@@ -67,7 +66,8 @@ namespace Capstone
                 {
                     quantity = kvp.Value.Quantity.ToString();
                 }
-                Console.WriteLine($"{kvp.Value.Name} at {kvp.Key} has {quantity} remaining, and costs {kvp.Value.Price}");
+                Console.WriteLine("HEADER");
+                Console.WriteLine($"{kvp.Key,-4}{kvp.Value.Name,-25}{quantity,4}{kvp.Value.Price,7:C2}");
             }
         }
 
@@ -133,7 +133,7 @@ namespace Capstone
                 this.PurchaseLog("GIVE CHANGE", balanceBefore);
 
                 decimal sum = (decimal)(quarters * quarter + dimes * dime + nickels * nickel);
-                Console.WriteLine($"Your Change is: {quarters} quarters, {dimes} dimes, {nickels} nickels, or {sum:C2}");
+                //Console.WriteLine($"Your Change is: {quarters} quarters, {dimes} dimes, {nickels} nickels, or {sum:C2}");
                 
             }
                 return change;
