@@ -98,7 +98,7 @@ namespace Capstone
                 this.Balance -= this.CurrentProductStock[key].Price;
 
                 // add the dispense into the log
-                this.PurchaseLog(this.CurrentProductStock[key].Name, balanceBefore);
+                this.PurchaseLog(this.CurrentProductStock[key].Name, /*this.CurrentProductStock.Keys*/, balanceBefore);
 
                 // update sales report.  increment the counter
                 SalesReport[this.CurrentProductStock[key].Name]++;
@@ -139,7 +139,7 @@ namespace Capstone
                 change[2] = nickels;
 
                 // log the give change
-                this.PurchaseLog("GIVE CHANGE", balanceBefore);
+                this.PurchaseLog("GIVE CHANGE:","", balanceBefore);
 
                 decimal sum = (decimal)(quarters * quarter + dimes * dime + nickels * nickel);
                 //Console.WriteLine($"Your Change is: {quarters} quarters, {dimes} dimes, {nickels} nickels, or {sum:C2}");
@@ -148,14 +148,14 @@ namespace Capstone
                 return change;
         }
 
-        public void PurchaseLog(string method, double balanceBefore)
+        public void PurchaseLog(string method, string identifer, double balanceBefore)
         {
             try
             {
                 using (StreamWriter sw = new StreamWriter(this.PurchaseLogPath,true))
                 {
                     DateTime now = DateTime.Now;
-                    sw.WriteLine($"{now} {method}: {balanceBefore:C2} {this.Balance:C2}");
+                    sw.WriteLine($"{now} {method} {identifer} {balanceBefore:C2} {this.Balance:C2}");
                 }
             }
             catch (Exception ex)

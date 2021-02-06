@@ -52,7 +52,7 @@ namespace Capstone
                     {
                         vendingMachine.UpdateBalance(money);
                         isValidData = true;
-                        vendingMachine.PurchaseLog("FEED MONEY", balanceBefore);
+                        vendingMachine.PurchaseLog("FEED MONEY:","", balanceBefore);
                     }
                     else
                     {
