@@ -50,9 +50,8 @@ namespace Capstone
                     int money = int.Parse(Console.ReadLine());
                     if (money == 1 || money == 2 || money == 5 || money == 10)
                     {
-                        vendingMachine.UpdateBalance(money);
+                        vendingMachine.FeedMoney(money);
                         isValidData = true;
-                        vendingMachine.PurchaseLog("FEED MONEY:","", balanceBefore);
                     }
                     else
                     {

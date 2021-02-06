@@ -143,16 +143,16 @@ namespace CapstoneTests
         [DataRow(0.00, 5.00, 5.00)]
         [DataRow(3.40, 5.00, 8.40)]
         [DataRow(5.50, 1.00, 6.50)]
-        public void TestUpdateBalance(double balance, double money, double expectedBalance)
+        public void TestFeedMoney(double balance, double deposit, double expectedBalance)
         {
             //Arrange
             VendingMachine vendingMachine = new VendingMachine(balance);
 
             //Act
-
+            double actualBalance = vendingMachine.FeedMoney((int)deposit);
 
             //Assert
-            Assert.AreEqual(expectedBalance, vendingMachine.UpdateBalance(money));
+            Assert.AreEqual(expectedBalance, actualBalance);
 
         }
 

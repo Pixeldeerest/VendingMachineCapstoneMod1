@@ -29,7 +29,7 @@ namespace Capstone
             this.SalesReportPath = salesReportPath;
         }
 
-        public void Restock()//parameter string path - path hardcoded in Program.cs
+        public void Restock()
         {
             try
             {
@@ -52,14 +52,16 @@ namespace Capstone
 
         }
 
-        public double GetBalance()
+        public double FeedMoney(int deposit)
         {
+            double balanceBefore = this.Balance;
+            this.Balance += deposit;
+            this.PurchaseLog("FEED MONEY:", "", balanceBefore);
             return this.Balance;
         }
 
-        public double UpdateBalance(double money)
+        public double GetBalance()
         {
-            this.Balance += money;
             return this.Balance;
         }
 
@@ -98,7 +100,7 @@ namespace Capstone
                 this.Balance -= this.CurrentProductStock[key].Price;
 
                 // add the dispense into the log
-                this.PurchaseLog(this.CurrentProductStock[key].Name, /*this.CurrentProductStock.Keys*/, balanceBefore);
+                this.PurchaseLog(this.CurrentProductStock[key].Name, key, balanceBefore);
 
                 // update sales report.  increment the counter
                 SalesReport[this.CurrentProductStock[key].Name]++;
